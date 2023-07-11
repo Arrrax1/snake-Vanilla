@@ -1,16 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Snake</title>
 </head>
+
 <body>
     <div class="main-container">
         <h1>Snake</h1>
+        <div class="top-container">
+            <h2 id="score">Score : 0</h2>
+            <div class="diff-container">
+                <input type="radio" name="difficulty" id="easy" checked><label for="easy">Easy</label>
+            </div>
+            <div class="diff-container">
+                <input type="radio" name="difficulty" id="medium"><label for="medium">Medium</label>
+            </div>
+            <div class="diff-container">
+                <input type="radio" name="difficulty" id="hard"><label for="hard">Hard</label>
+            </div>
+        </div>
         <canvas id="board"></canvas>
     </div>
     <script src="app.js"></script>
 </body>
+
 </html>
