@@ -11,6 +11,7 @@ let directionY = 0
 
 let ctx = canvas.getContext('2d')
 
+let score=0
 let snakeBody = [[40, 40]]
 
 let foodX = Math.floor(Math.random() * number_cols) * block_size
@@ -44,6 +45,9 @@ function drawSnake(snakeBody) {
     // Redraw canvas
     ctx.fillStyle = 'black'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
+    // Food Redraw
+    ctx.fillStyle = 'red'
+    ctx.fillRect(foodX, foodY, 20, 20)
     // Update Snake Moves
     // we just add the new head position then delete last position
     // we update the positions before redraw to make sure it updates oposition faster
@@ -55,19 +59,46 @@ function drawSnake(snakeBody) {
     snakeBody.unshift(nextPart)
     snakeBody.pop()
     // Redraw Snake
-    ctx.fillStyle = 'green'
     for (let i = 0; i < snakeBody.length; i++) {
-        ctx.fillRect(snakeBody[i][0], snakeBody[i][1], 20, 20)
+        switch (i) {
+            case 0:
+                ctx.lineJoin = 'bevel'
+                ctx.fillStyle = '#129406'
+                ctx.fillRect(snakeBody[i][0], snakeBody[i][1], 20, 20)
+                ctx.strokeStyle = '#10c100'
+                ctx.lineWidth = 3
+                ctx.lineJoin = 'bevel'
+                ctx.strokeRect(snakeBody[i][0], snakeBody[i][1], 20, 20)
+                break;
+            case snakeBody.length - 1:
+                ctx.fillStyle = '#129406'
+                ctx.fillRect(snakeBody[i][0] + 5, snakeBody[i][1] + 5, 10, 10)
+                ctx.strokeStyle = '#10c100'
+                ctx.lineWidth = 3
+                ctx.lineJoin = 'bevel'
+                ctx.strokeRect(snakeBody[i][0] + 3, snakeBody[i][1] + 3, 14, 14)
+                ctx.fillStyle = '#333'
+                ctx.fillRect(snakeBody[i][0] + 8, snakeBody[i][1] + 8, 4, 4)
+                break;
+            default:
+                ctx.fillStyle = '#129406'
+                ctx.fillRect(snakeBody[i][0] + 2, snakeBody[i][1] + 2, 16, 16)
+                ctx.strokeStyle = '#10c100'
+                ctx.lineWidth = 3
+                ctx.strokeRect(snakeBody[i][0] + 2, snakeBody[i][1] + 2, 16, 16)
+                break;
+        }
     }
-    // Food Redraw
-    ctx.fillStyle = 'red'
-    ctx.fillRect(foodX, foodY, 20, 20)
+    if (checkGameOver(snakeBody)) console.log(`Game Over, your score was ${score}`)
     eatFood()
     // to keep updating
     intervID = setInterval(() => {
         // Redraw canvas
         ctx.fillStyle = 'black'
         ctx.fillRect(0, 0, canvas.width, canvas.height)
+        // Food Redraw
+        ctx.fillStyle = 'red'
+        ctx.fillRect(foodX, foodY, 20, 20)
         // Update Snake Moves
         // we just add the new head position then delete last position
         // we update the positions before redraw to make sure it updates oposition faster
@@ -79,13 +110,37 @@ function drawSnake(snakeBody) {
         snakeBody.unshift(nextPart)
         snakeBody.pop()
         // Redraw Snake
-        ctx.fillStyle = 'green'
         for (let i = 0; i < snakeBody.length; i++) {
-            ctx.fillRect(snakeBody[i][0], snakeBody[i][1], 20, 20)
+            switch (i) {
+                case 0:
+                    ctx.lineJoin = 'bevel'
+                    ctx.fillStyle = '#129406'
+                    ctx.fillRect(snakeBody[i][0], snakeBody[i][1], 20, 20)
+                    ctx.strokeStyle = '#10c100'
+                    ctx.lineWidth = 3
+                    ctx.lineJoin = 'bevel'
+                    ctx.strokeRect(snakeBody[i][0], snakeBody[i][1], 20, 20)
+                    break;
+                case snakeBody.length - 1:
+                    ctx.fillStyle = '#129406'
+                    ctx.fillRect(snakeBody[i][0] + 5, snakeBody[i][1] + 5, 10, 10)
+                    ctx.strokeStyle = '#10c100'
+                    ctx.lineWidth = 3
+                    ctx.lineJoin = 'bevel'
+                    ctx.strokeRect(snakeBody[i][0] + 3, snakeBody[i][1] + 3, 14, 14)
+                    ctx.fillStyle = '#333'
+                    ctx.fillRect(snakeBody[i][0] + 8, snakeBody[i][1] + 8, 4, 4)
+                    break;
+                default:
+                    ctx.fillStyle = '#129406'
+                    ctx.fillRect(snakeBody[i][0] + 2, snakeBody[i][1] + 2, 16, 16)
+                    ctx.strokeStyle = '#10c100'
+                    ctx.lineWidth = 3
+                    ctx.strokeRect(snakeBody[i][0] + 2, snakeBody[i][1] + 2, 16, 16)
+                    break;
+            }
         }
-        // Food Redraw
-        ctx.fillStyle = 'red'
-        ctx.fillRect(foodX, foodY, 20, 20)
+        if (checkGameOver(snakeBody)) console.log(`Game Over, your score was ${score}`)
         eatFood()
     }, speed);
 }
@@ -102,7 +157,7 @@ function eatFood() {
 }
 
 drawSnake(snakeBody)
-document.addEventListener('keydown', (event) => { //keydown better then keyup
+document.addEventListener('keydown', (event) => { //keydown better then keyup to make turns faster, however if you hold it, it makes a speed glitch
     // we cancel the setInterval then restart the game to make sure it loads faster
     clearInterval(intervID)
     if (event.code === 'ArrowUp' && directionY != 20) {
@@ -131,6 +186,14 @@ function updateFood() {
     foodY = Math.floor(Math.random() * number_rows) * block_size
 }
 
+function checkGameOver(snakeBody) {
+    for (let i = 1; i < snakeBody.length; i++) {
+        if ((snakeBody[0][0] == snakeBody[i][0]) && (snakeBody[0][1] == snakeBody[i][1])) return true
+        else if ((snakeBody[0][0] == 660) || (snakeBody[0][0] < 0) || (snakeBody[0][1] == 400) || (snakeBody[0][1] < 0)) return true
+        else return false
+    }
+}
+
 // ADD SCORE --- ADDED
 // SNAKE HEAD AND TAIL (make blocks get smaller as they reach tail) // Stroke gets bigger so that it stays centered
 
@@ -138,3 +201,4 @@ function updateFood() {
 // Food Must Not Spawn on body
 // ADD difficulty = Speed --- ADDED
 // ADD NEW GAME btn
+// Consider adding third item to snakeBody 'orientation' and based off of it draw the part

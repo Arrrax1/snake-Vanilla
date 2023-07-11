@@ -37,7 +37,7 @@ label {
     border-radius: 4px;
     font-family: 'Belanosima', sans-serif;
     font-size: 18px;
-    color: #333;
+    color: gray;
     background-color: silver;
     cursor: pointer;
     width: fit-content;
@@ -55,5 +55,6 @@ input[type='radio'] {
 
 input[type='radio']:checked+label {
     font-size: 22px;
+    color: #333;
     background-color: whitesmoke;
 }
