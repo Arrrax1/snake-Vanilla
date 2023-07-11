@@ -17,6 +17,26 @@ let foodX = Math.floor(Math.random() * number_cols) * block_size
 let foodY = Math.floor(Math.random() * number_rows) * block_size
 
 let intervID
+
+let speed = 200
+document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('change', (event) => {
+        switch (event.target.id) {
+            case 'easy':
+                speed = 200
+                break;
+            case 'medium':
+                speed = 100
+                break;
+            case 'hard':
+                speed = 50
+                break;
+            default:
+                break;
+        }
+    })
+})
+
 function drawSnake(snakeBody) {
     // we run it first with no interval to make sure it has no delay on first execution
     // especially when changing direction, to make it almost instant direction change
@@ -67,7 +87,7 @@ function drawSnake(snakeBody) {
         ctx.fillStyle = 'red'
         ctx.fillRect(foodX, foodY, 20, 20)
         eatFood()
-    }, 100);
+    }, speed);
 }
 
 function eatFood() {
@@ -111,3 +131,10 @@ function updateFood() {
     foodY = Math.floor(Math.random() * number_rows) * block_size
 }
 
+// ADD SCORE --- ADDED
+// SNAKE HEAD AND TAIL (make blocks get smaller as they reach tail) // Stroke gets bigger so that it stays centered
+
+// ADD BOUNDS and GameOver on Overlap
+// Food Must Not Spawn on body
+// ADD difficulty = Speed --- ADDED
+// ADD NEW GAME btn
