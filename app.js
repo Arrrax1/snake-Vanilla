@@ -11,7 +11,7 @@ let directionY = 0
 
 let ctx = canvas.getContext('2d')
 
-let score=0
+let score = 0
 let snakeBody = [[40, 40]]
 
 let foodX = Math.floor(Math.random() * number_cols) * block_size
@@ -19,12 +19,12 @@ let foodY = Math.floor(Math.random() * number_rows) * block_size
 
 let intervID
 
-let speed = 200
+let speed = 1000
 document.querySelectorAll('input').forEach(input => {
     input.addEventListener('change', (event) => {
         switch (event.target.id) {
             case 'easy':
-                speed = 200
+                speed = 1000
                 break;
             case 'medium':
                 speed = 100
@@ -60,6 +60,7 @@ function drawSnake(snakeBody) {
     snakeBody.pop()
     // Redraw Snake
     for (let i = 0; i < snakeBody.length; i++) {
+        if (overlapBody() || outOfBounds()) console.log(`Game Over, your score was ${score}`)
         switch (i) {
             case 0:
                 ctx.lineJoin = 'bevel'
@@ -89,7 +90,7 @@ function drawSnake(snakeBody) {
                 break;
         }
     }
-    if (checkGameOver(snakeBody)) console.log(`Game Over, your score was ${score}`)
+    if (overlapBody() || outOfBounds()) console.log(`Game Over, your score was ${score}`)
     eatFood()
     // to keep updating
     intervID = setInterval(() => {
@@ -102,6 +103,7 @@ function drawSnake(snakeBody) {
         // Update Snake Moves
         // we just add the new head position then delete last position
         // we update the positions before redraw to make sure it updates oposition faster
+        if ((overlapBody() || outOfBounds())) console.log(`Game Over, your score was ${score}`)
         let nextPart = []
         let x = snakeBody[0][0] + directionX
         let y = snakeBody[0][1] + directionY
@@ -111,6 +113,8 @@ function drawSnake(snakeBody) {
         snakeBody.pop()
         // Redraw Snake
         for (let i = 0; i < snakeBody.length; i++) {
+            if (overlapBody() || outOfBounds()) console.log(`Game Over, your score was ${score}`)
+            if(overlapBody()) console.log('overlap')
             switch (i) {
                 case 0:
                     ctx.lineJoin = 'bevel'
@@ -140,7 +144,7 @@ function drawSnake(snakeBody) {
                     break;
             }
         }
-        if (checkGameOver(snakeBody)) console.log(`Game Over, your score was ${score}`)
+        if (overlapBody() || outOfBounds()) console.log(`Game Over, your score was ${score}`)
         eatFood()
     }, speed);
 }
@@ -187,11 +191,34 @@ function updateFood() {
 }
 
 function checkGameOver(snakeBody) {
-    for (let i = 1; i < snakeBody.length; i++) {
-        if ((snakeBody[0][0] == snakeBody[i][0]) && (snakeBody[0][1] == snakeBody[i][1])) return true
-        else if ((snakeBody[0][0] == 660) || (snakeBody[0][0] < 0) || (snakeBody[0][1] == 400) || (snakeBody[0][1] < 0)) return true
-        else return false
+    if (outOfBounds()) {
+        return true
     }
+    if (overlapBody()) {
+        return true
+    }
+    // for (let i = 0; i < snakeBody.length-1; i++) {
+    //     if ((snakeBody[0][0] >= 660) || (snakeBody[0][0] < 0) || (snakeBody[0][1] >= 400) || (snakeBody[0][1] < 0)) {
+    //         return true
+    //     } else if ((snakeBody[0][0] == snakeBody[i + 1][0]) && (snakeBody[0][1] == snakeBody[i + 1][1])) {
+    //         return true
+    //     } else {
+    //         return false
+    //     }
+    // }
+}
+
+function overlapBody() {
+    for (let i = 2; i < snakeBody.length; i++) {
+        if ((snakeBody[0][0] == snakeBody[i][0]) && (snakeBody[0][1] == snakeBody[i][1])) {
+            return true
+        }
+    }
+    return false
+}
+function outOfBounds() {
+    if ((snakeBody[0][0] == 640) || (snakeBody[0][0] < 0) || (snakeBody[0][1] == 400) || (snakeBody[0][1] < 0)) return true
+    else return false
 }
 
 // ADD SCORE --- ADDED
