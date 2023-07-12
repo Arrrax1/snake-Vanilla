@@ -157,6 +157,7 @@ function eatFood() {
         snakeBody.unshift(newPart)
         // relocate food
         updateFood()
+        document.getElementById('score').textContent = `Score : ${score}`
     }
 }
 
