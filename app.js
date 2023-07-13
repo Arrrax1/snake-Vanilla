@@ -19,12 +19,12 @@ let foodY = Math.floor(Math.random() * number_rows) * block_size
 
 let intervID
 
-let speed = 1000
+let speed = 200
 document.querySelectorAll('input').forEach(input => {
     input.addEventListener('change', (event) => {
         switch (event.target.id) {
             case 'easy':
-                speed = 1000
+                speed = 200
                 break;
             case 'medium':
                 speed = 100
@@ -60,7 +60,6 @@ function drawSnake(snakeBody) {
     snakeBody.pop()
     // Redraw Snake
     for (let i = 0; i < snakeBody.length; i++) {
-        if (overlapBody() || outOfBounds()) console.log(`Game Over, your score was ${score}`)
         switch (i) {
             case 0:
                 ctx.lineJoin = 'bevel'
@@ -90,7 +89,7 @@ function drawSnake(snakeBody) {
                 break;
         }
     }
-    if (overlapBody() || outOfBounds()) console.log(`Game Over, your score was ${score}`)
+    if (checkGameOver()) console.log(`Game Over, your score was ${score}`)
     eatFood()
     // to keep updating
     intervID = setInterval(() => {
@@ -103,7 +102,6 @@ function drawSnake(snakeBody) {
         // Update Snake Moves
         // we just add the new head position then delete last position
         // we update the positions before redraw to make sure it updates oposition faster
-        if ((overlapBody() || outOfBounds())) console.log(`Game Over, your score was ${score}`)
         let nextPart = []
         let x = snakeBody[0][0] + directionX
         let y = snakeBody[0][1] + directionY
@@ -113,8 +111,6 @@ function drawSnake(snakeBody) {
         snakeBody.pop()
         // Redraw Snake
         for (let i = 0; i < snakeBody.length; i++) {
-            if (overlapBody() || outOfBounds()) console.log(`Game Over, your score was ${score}`)
-            if(overlapBody()) console.log('overlap')
             switch (i) {
                 case 0:
                     ctx.lineJoin = 'bevel'
@@ -144,7 +140,7 @@ function drawSnake(snakeBody) {
                     break;
             }
         }
-        if (overlapBody() || outOfBounds()) console.log(`Game Over, your score was ${score}`)
+        if (checkGameOver()) console.log(`Game Over, your score was ${score}`)
         eatFood()
     }, speed);
 }
@@ -157,6 +153,7 @@ function eatFood() {
         snakeBody.unshift(newPart)
         // relocate food
         updateFood()
+        score+= 10
         document.getElementById('score').textContent = `Score : ${score}`
     }
 }
@@ -191,22 +188,16 @@ function updateFood() {
     foodY = Math.floor(Math.random() * number_rows) * block_size
 }
 
-function checkGameOver(snakeBody) {
-    if (outOfBounds()) {
-        return true
+function checkGameOver() {
+    //if still inbounds
+    if ((snakeBody[0][0] == 640) || (snakeBody[0][0] < 0) || (snakeBody[0][1] == 400) || (snakeBody[0][1] < 0)) return true
+    // if overlap
+    for (let i = 2; i < snakeBody.length; i++) {
+        if ((snakeBody[0][0] == snakeBody[i][0]) && (snakeBody[0][1] == snakeBody[i][1])) {
+            return true
+        }
     }
-    if (overlapBody()) {
-        return true
-    }
-    // for (let i = 0; i < snakeBody.length-1; i++) {
-    //     if ((snakeBody[0][0] >= 660) || (snakeBody[0][0] < 0) || (snakeBody[0][1] >= 400) || (snakeBody[0][1] < 0)) {
-    //         return true
-    //     } else if ((snakeBody[0][0] == snakeBody[i + 1][0]) && (snakeBody[0][1] == snakeBody[i + 1][1])) {
-    //         return true
-    //     } else {
-    //         return false
-    //     }
-    // }
+    return false
 }
 
 function overlapBody() {
