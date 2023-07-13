@@ -163,11 +163,10 @@ drawSnake(snakeBody)
 document.addEventListener('keydown', (event) => { //keydown better then keyup to make turns faster, however if you hold it, it makes a speed glitch
     // we cancel the setInterval then restart the game to make sure it loads faster
     if (inPlay) {
+        clearInterval(intervID)
         if (event.code === 'ArrowUp' && directionY != 20) {
-            clearInterval(intervID)
             directionX = 0
             directionY = -20
-            drawSnake(snakeBody)
         }
         if (event.code === 'ArrowDown' && directionY != -20) {
             directionX = 0
@@ -181,6 +180,7 @@ document.addEventListener('keydown', (event) => { //keydown better then keyup to
             directionX = -20
             directionY = 0
         }
+        drawSnake(snakeBody)
     }
 })
 
@@ -210,6 +210,21 @@ function gameOver() {
     inPlay = false
 }
 
+document.getElementById('newGame').addEventListener('click', () => {
+    document.getElementById('gameOver').style.display = 'none'
+    // re-init
+    inPlay = true
+    snakeBody = [[40, 40]]
+    // clear canvas
+    ctx.fillStyle = 'black'
+    ctx.fillRect(0, 0, 640, 400)
+    // Food Redraw
+    ctx.fillStyle = 'red'
+    ctx.fillRect(foodX, foodY, 20, 20)
+    // draw head
+    ctx.fillStyle = 'green'
+    ctx.fillRect(40, 40, 20, 20)
+})
 // ADD SCORE --- ADDED
 // SNAKE HEAD AND TAIL (make blocks get smaller as they reach tail) // Stroke gets bigger so that it stays centered
 
