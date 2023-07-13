@@ -18,6 +18,7 @@ let foodX = Math.floor(Math.random() * number_cols) * block_size
 let foodY = Math.floor(Math.random() * number_rows) * block_size
 
 let intervID
+let inPlay = true
 
 let speed = 200
 document.querySelectorAll('input').forEach(input => {
@@ -140,7 +141,7 @@ function drawSnake(snakeBody) {
                     break;
             }
         }
-        if (checkGameOver()) console.log(`Game Over, your score was ${score}`)
+        if (checkGameOver()) gameOver()
         eatFood()
     }, speed);
 }
@@ -153,7 +154,7 @@ function eatFood() {
         snakeBody.unshift(newPart)
         // relocate food
         updateFood()
-        score+= 10
+        score += 10
         document.getElementById('score').textContent = `Score : ${score}`
     }
 }
@@ -161,24 +162,26 @@ function eatFood() {
 drawSnake(snakeBody)
 document.addEventListener('keydown', (event) => { //keydown better then keyup to make turns faster, however if you hold it, it makes a speed glitch
     // we cancel the setInterval then restart the game to make sure it loads faster
-    clearInterval(intervID)
-    if (event.code === 'ArrowUp' && directionY != 20) {
-        directionX = 0
-        directionY = -20
+    if (inPlay) {
+        if (event.code === 'ArrowUp' && directionY != 20) {
+            clearInterval(intervID)
+            directionX = 0
+            directionY = -20
+            drawSnake(snakeBody)
+        }
+        if (event.code === 'ArrowDown' && directionY != -20) {
+            directionX = 0
+            directionY = 20
+        }
+        if (event.code === 'ArrowRight' && directionX != -20) {
+            directionX = 20
+            directionY = 0
+        }
+        if (event.code === 'ArrowLeft' && directionX != 20) {
+            directionX = -20
+            directionY = 0
+        }
     }
-    if (event.code === 'ArrowDown' && directionY != -20) {
-        directionX = 0
-        directionY = 20
-    }
-    if (event.code === 'ArrowRight' && directionX != -20) {
-        directionX = 20
-        directionY = 0
-    }
-    if (event.code === 'ArrowLeft' && directionX != 20) {
-        directionX = -20
-        directionY = 0
-    }
-    drawSnake(snakeBody)
 })
 
 // food point
@@ -200,17 +203,11 @@ function checkGameOver() {
     return false
 }
 
-function overlapBody() {
-    for (let i = 2; i < snakeBody.length; i++) {
-        if ((snakeBody[0][0] == snakeBody[i][0]) && (snakeBody[0][1] == snakeBody[i][1])) {
-            return true
-        }
-    }
-    return false
-}
-function outOfBounds() {
-    if ((snakeBody[0][0] == 640) || (snakeBody[0][0] < 0) || (snakeBody[0][1] == 400) || (snakeBody[0][1] < 0)) return true
-    else return false
+function gameOver() {
+    clearInterval(intervID)
+    document.getElementById('gameOver').style.display = 'flex'
+    document.getElementById('finalScore').textContent = `Your Score Was : ${score}`
+    inPlay = false
 }
 
 // ADD SCORE --- ADDED
